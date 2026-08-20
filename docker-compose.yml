@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: deepguard-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - APP_ENV=production
+      - SECRET_KEY=deepguard_docker_secret_key_32bytes
+      - DATABASE_URL=sqlite:///./deepguard.db
+    volumes:
+      - ./uploads:/app/uploads
+      - ./reports:/app/reports
+      - ./models:/app/models
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    container_name: deepguard-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend

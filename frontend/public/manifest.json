@@ -1,0 +1,17 @@
+{
+  "short_name": "DeepGuard",
+  "name": "DeepGuard Defensive Media Forensics Suite",
+  "icons": [
+    {
+      "src": "/vite.svg",
+      "type": "image/svg+xml",
+      "sizes": "192x192 512x512"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#05060B",
+  "theme_color": "#00d1ff",
+  "display": "standalone",
+  "orientation": "any",
+  "description": "AI-Powered Deepfake Detection & Media Forensics Platform with Chain of Custody Audit."
+}

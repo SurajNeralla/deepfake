@@ -1,0 +1,31 @@
+# DeepGuard ML & Forensic Engine Configuration
+
+model:
+  name: "DeepGuard-Ensemble-v2.4"
+  version: "2.4.0"
+  device: "auto" # 'cpu', 'cuda', or 'auto'
+  weights_dir: "./models/weights"
+
+thresholds:
+  suspicious_lower: 0.40
+  suspicious_upper: 0.70
+  likely_fake: 0.85
+  real: 0.25
+
+image_forensics:
+  ela_scale: 15
+  ela_quality: 90
+  fft_high_freq_cutoff: 0.8
+  min_face_size: 64
+
+video_forensics:
+  default_fps_sample: 2.0
+  max_sampled_frames: 60
+  temporal_jitter_threshold: 0.35
+
+audio_forensics:
+  target_sr: 16000
+  n_mels: 128
+  n_fft: 2048
+  hop_length: 512
+  spectral_discontinuity_threshold: 0.45

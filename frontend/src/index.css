@@ -1,0 +1,77 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    background-color: #05060B;
+    color: #e3e1e9;
+  }
+}
+
+.glass-panel, .glass-card {
+  background: rgba(16, 18, 27, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  border-left: 1px solid rgba(255, 255, 255, 0.05);
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.cyber-grid {
+  background-image: 
+    linear-gradient(to right, rgba(255,255,255,0.02) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255,255,255,0.02) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+.btn-primary {
+  background-color: #00d1ff;
+  color: #05060B;
+  transition: all 0.3s ease;
+}
+.btn-primary:hover {
+  box-shadow: 0 0 18px rgba(0, 209, 255, 0.6);
+}
+
+.btn-secondary {
+  background: transparent;
+  border: 1px solid #00d1ff;
+  color: #00d1ff;
+  transition: all 0.3s ease;
+}
+.btn-secondary:hover {
+  background: rgba(0, 209, 255, 0.12);
+  box-shadow: 0 0 12px rgba(0, 209, 255, 0.3) inset;
+}
+
+.glow-hover:hover {
+  box-shadow: 0 0 20px rgba(0, 209, 255, 0.35);
+  border-color: rgba(0, 209, 255, 0.5);
+}
+
+.scan-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #00d1ff;
+  box-shadow: 0 0 12px #00d1ff;
+  animation: scan 3s ease-in-out infinite;
+}
+
+@keyframes scan {
+  0% { top: 5%; opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { top: 95%; opacity: 0; }
+}
+
+.progress-pulse {
+  animation: pulse-op 1.5s ease-in-out infinite;
+}
+@keyframes pulse-op {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
