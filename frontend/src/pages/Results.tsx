@@ -6,6 +6,7 @@ import { ForensicGauge } from '../components/ForensicGauge';
 import { ElaHeatmap } from '../components/ElaHeatmap';
 import { VideoTimeline } from '../components/VideoTimeline';
 import { AudioSpectrogram } from '../components/AudioSpectrogram';
+import { ExplainableAiCard } from '../components/ExplainableAiCard';
 
 interface ResultsProps {
   addToast: (type: 'info' | 'success' | 'warning' | 'error', text: string) => void;
@@ -168,6 +169,13 @@ export const Results: React.FC<ResultsProps> = ({ addToast }) => {
           </div>
         </div>
       </div>
+
+      {/* Explainable AI (XAI) "Why did DeepGuard flag this?" Section */}
+      <ExplainableAiCard
+        classification={result.classification}
+        confidence={result.confidence}
+        mediaType={result.media_type}
+      />
 
       {/* Media Inspection Section */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

@@ -73,14 +73,12 @@ export const ModelCenter: React.FC = () => {
 
   useEffect(() => {
     fetch('/api/models')
-      ? fetch('/api/models')
-          .then(res => res.json())
-          .then(data => {
-            if (data.hardware_telemetry) setTelemetry(data.hardware_telemetry);
-            if (data.models) setModels(data.models);
-          })
-          .catch(() => {})
-      : null;
+      .then(res => res.json())
+      .then(data => {
+        if (data.hardware_telemetry) setTelemetry(data.hardware_telemetry);
+        if (data.models) setModels(data.models);
+      })
+      .catch(() => {});
   }, []);
 
   return (

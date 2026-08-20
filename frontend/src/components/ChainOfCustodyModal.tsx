@@ -1,7 +1,7 @@
 import React from 'react';
 
 export interface ChainOfCustodyData {
-  analysis_id: str;
+  analysis_id: string;
   sha256_hash: string;
   original_filename: string;
   media_type: string;

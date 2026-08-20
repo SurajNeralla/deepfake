@@ -3,6 +3,7 @@ import { ElaComparisonSlider } from '../components/ElaComparisonSlider';
 import { MultimodalBreakdownCard } from '../components/MultimodalBreakdownCard';
 import { MetadataInspectorCard } from '../components/MetadataInspectorCard';
 import { ChainOfCustodyModal, ChainOfCustodyData } from '../components/ChainOfCustodyModal';
+import { ExplainableAiCard } from '../components/ExplainableAiCard';
 
 export const ForensicWorkspace: React.FC = () => {
   const [activeStep, setActiveStep] = useState<number>(4); // 0: Upload, 1: Preprocessing, 2: Detection, 3: Evidence, 4: Investigation, 5: Report
@@ -170,6 +171,13 @@ export const ForensicWorkspace: React.FC = () => {
             temporalScore={0.91}
             lipSyncScore={0.84}
             metadataScore={0.65}
+          />
+
+          {/* Explainable AI (XAI) Card */}
+          <ExplainableAiCard
+            classification="LIKELY FAKE"
+            confidence={0.874}
+            mediaType="video"
           />
         </div>
       </div>
