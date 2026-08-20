@@ -38,16 +38,24 @@ export const Analyze: React.FC<AnalyzeProps> = ({ addToast }) => {
   };
 
   const handleFileSelect = (file: File) => {
-    const ext = file.name.split('.').pop()?.toLowerCase() || '';
+    let targetType = mediaType;
+    if (file.type.startsWith('image/')) targetType = 'image';
+    else if (file.type.startsWith('video/')) targetType = 'video';
+    else if (file.type.startsWith('audio/')) targetType = 'audio';
 
+    if (targetType !== mediaType) {
+      setMediaType(targetType);
+    }
+
+    const ext = file.name.split('.').pop()?.toLowerCase() || '';
     const allowedMap: Record<MediaType, string[]> = {
-      image: ['jpg', 'jpeg', 'png', 'webp'],
-      video: ['mp4', 'mov', 'avi', 'webm'],
-      audio: ['mp3', 'wav', 'm4a']
+      image: ['jpg', 'jpeg', 'png', 'webp', 'jfif', 'pjp', 'pjpeg', 'svg', 'bmp', 'tiff'],
+      video: ['mp4', 'mov', 'avi', 'webm', 'mkv', 'flv'],
+      audio: ['mp3', 'wav', 'm4a', 'aac', 'flac', 'ogg']
     };
 
-    if (!allowedMap[mediaType].includes(ext)) {
-      addToast('error', `Unsupported file extension .${ext} for ${mediaType} scanner. Allowed: ${allowedMap[mediaType].join(', ')}`);
+    if (!allowedMap[targetType].includes(ext) && !file.type.startsWith(targetType)) {
+      addToast('error', `Unsupported file extension .${ext}. Allowed: ${allowedMap[targetType].join(', ')}`);
       return;
     }
 
@@ -57,7 +65,7 @@ export const Analyze: React.FC<AnalyzeProps> = ({ addToast }) => {
     }
 
     setSelectedFile(file);
-    addToast('info', `File ${file.name} selected for ${mediaType.toUpperCase()} inspection.`);
+    addToast('info', `File ${file.name} selected for ${targetType.toUpperCase()} inspection.`);
   };
 
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {

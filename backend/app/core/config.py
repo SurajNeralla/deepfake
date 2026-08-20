@@ -6,7 +6,7 @@ class Settings(BaseSettings):
     APP_ENV: str = "development"
     SECRET_KEY: str = "deepguard_super_secret_key_change_in_production_32bytes"
     DEBUG: bool = True
-    CORS_ORIGINS: List[str] = ["http://localhost:5173", "http://localhost:3000", "http://127.0.0.1:5173"]
+    CORS_ORIGINS: List[str] = ["*"]
     
     DATABASE_URL: str = "sqlite:///./deepguard.db"
     
