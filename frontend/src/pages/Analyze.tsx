@@ -99,8 +99,9 @@ export const Analyze: React.FC<AnalyzeProps> = ({ addToast }) => {
       }, 800);
 
     } catch (err: any) {
+      console.error("Forensic analysis pipeline error:", err);
       setIsProcessing(false);
-      const errMsg = err?.response?.data?.detail || 'Analysis failed. Please verify file format and try again.';
+      const errMsg = err?.response?.data?.detail || err?.message || 'Analysis failed. Please verify file format and try again.';
       addToast('error', errMsg);
     }
   };
