@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/shield.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DeepGuard - AI-Powered Deepfake Detection & Media Forensics Platform</title>
+    <link rel="manifest" href="/deepfake/manifest.json" />
+    <meta name="theme-color" content="#00d1ff" />
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <script type="module" crossorigin src="/deepfake/assets/index-D667gZ8G.js"></script>
+    <link rel="stylesheet" crossorigin href="/deepfake/assets/index-C3GcrHQf.css">
+  </head>
+  <body class="bg-[#05060B] text-[#e3e1e9] font-body min-h-screen antialiased selection:bg-[#00d1ff] selection:text-[#05060B]">
+    <div id="root"></div>
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js').catch(() => {});
+        });
+      }
+    </script>
+  </body>
+</html>
