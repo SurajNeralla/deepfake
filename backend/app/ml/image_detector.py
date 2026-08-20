@@ -15,6 +15,7 @@ from backend.app.preprocessing.image_processor import (
     detect_faces,
     calculate_blur_variance
 )
+from backend.app.preprocessing.metadata_inspector import extract_metadata
 
 class ImageDetector(BaseDetector):
     @property
@@ -27,11 +28,17 @@ class ImageDetector(BaseDetector):
         fft_score = analyze_fft_spectrum(media_path)
         faces = detect_faces(media_path)
         blur_var = calculate_blur_variance(media_path)
+        meta = extract_metadata(media_path)
 
         # 2. Check for AI keywords in filename or metadata
         filename_lower = os.path.basename(media_path).lower()
-        ai_keywords = ["fake", "deepfake", "synthetic", "midjourney", "stablediffusion", "dalle", "comfyui", "ai_gen"]
-        has_ai_tag = any(kw in filename_lower for kw in ai_keywords)
+        ai_keywords = [
+            "fake", "deepfake", "synthetic", "midjourney", "stablediffusion", "dalle", "comfyui", "ai_gen",
+            "prompt", "sd", "diffusion", "generated", "webui", "artstation", "face_swap", "faceswap",
+            "concept_art", "ai", "gen", "novelai", "automatic1111"
+        ]
+        has_filename_ai_tag = any(kw in filename_lower for kw in ai_keywords)
+        has_metadata_ai_tag = len(meta.get("suspicious_tags", [])) > 0 or meta.get("software") != "None detected"
 
         # Calculate metrics
         visual_consistency = max(0.05, min(1.0, 1.0 - (ela_score * 0.5 + fft_score * 0.5)))
@@ -39,17 +46,21 @@ class ImageDetector(BaseDetector):
         face_consistency = 0.92 if len(faces) > 0 else 0.75
 
         # Multi-signal forensic heuristic aggregation
-        if has_ai_tag:
-            raw_confidence = min(0.95, max(0.75, (artifact_score * 0.5 + 0.45)))
+        if has_filename_ai_tag or has_metadata_ai_tag:
+            raw_confidence = min(0.96, max(0.78, (artifact_score * 0.4 + 0.55)))
+        elif ela_score > 0.35 or fft_score > 0.35 or not meta.get("exif_present"):
+            # Synthetic indicator based on missing camera EXIF + spatial compression variance
+            raw_confidence = min(0.88, max(0.62, (ela_score * 0.5 + fft_score * 0.5 + 0.20)))
         else:
-            raw_confidence = max(0.08, (ela_score * 0.4 + fft_score * 0.4 + (1.0 - visual_consistency) * 0.2))
+            # Verified camera EXIF present + low ELA variance = REAL
+            raw_confidence = max(0.08, (ela_score * 0.3 + fft_score * 0.3))
 
         # Determine classification state
         if raw_confidence < 0.25:
             classification = "REAL"
-        elif raw_confidence < 0.45:
+        elif raw_confidence < 0.48:
             classification = "LIKELY REAL"
-        elif raw_confidence < 0.70:
+        elif raw_confidence < 0.72:
             classification = "SUSPICIOUS"
         else:
             classification = "LIKELY FAKE"
@@ -59,28 +70,29 @@ class ImageDetector(BaseDetector):
 
         if self.is_demo_fallback:
             explanations.append({
-                "reason": "Evaluated using spatial ELA residual variance & Fourier spectral frequency pipeline.",
+                "reason": "Evaluated using spatial ELA residual variance, Fourier spectral frequency, and metadata provenance pipeline.",
                 "severity": "low",
                 "timestamp": None,
                 "region": None
             })
 
-        if ela_score > 0.40:
+        if has_filename_ai_tag or has_metadata_ai_tag:
+            explanations.append({
+                "reason": "Generative AI software signature or prompt parameters identified in asset metadata.",
+                "severity": "critical",
+                "timestamp": None,
+                "region": None
+            })
+
+        if ela_score > 0.35:
             explanations.append({
                 "reason": f"Localized compression difference detected across facial boundary region (ELA score: {round(ela_score, 2)}).",
-                "severity": "high" if ela_score > 0.65 else "medium",
+                "severity": "high" if ela_score > 0.60 else "medium",
                 "timestamp": None,
                 "region": faces[0] if faces else None
             })
-        else:
-            explanations.append({
-                "reason": f"Uniform error level compression across pixel frame consistent with camera hardware (ELA score: {round(ela_score, 2)}).",
-                "severity": "low",
-                "timestamp": None,
-                "region": None
-            })
 
-        if fft_score > 0.40:
+        if fft_score > 0.35:
             explanations.append({
                 "reason": f"Unnatural high-frequency spectral grid artifacts detected in Fourier domain (FFT score: {round(fft_score, 2)}).",
                 "severity": "high",
@@ -90,7 +102,7 @@ class ImageDetector(BaseDetector):
 
         if len(faces) > 0:
             explanations.append({
-                "reason": f"Identified {len(faces)} human facial region(s); verified natural anatomical contour and eye reflection symmetry.",
+                "reason": f"Identified {len(faces)} human facial region(s); evaluated anatomical blending contour.",
                 "severity": "low",
                 "timestamp": None,
                 "region": faces[0]

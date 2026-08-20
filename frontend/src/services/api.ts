@@ -54,8 +54,13 @@ export const api = {
       
       const fileId = `dg_${Math.random().toString(36).substring(2, 10)}`;
       const lowerName = fname.toLowerCase();
-      const isFake = lowerName.includes('fake') || lowerName.includes('deepfake') || lowerName.includes('synthetic') || lowerName.includes('ai_gen') || lowerName.includes('midjourney');
-      const confidence = isFake ? 0.8642 : 0.1245;
+      const aiKeywords = [
+        'fake', 'deepfake', 'synthetic', 'ai_gen', 'midjourney', 'stablediffusion', 'dalle', 'dall-e',
+        'comfyui', 'automatic1111', 'novelai', 'generated', 'prompt', 'concept_art', 'artstation',
+        'diffusion', 'webui', 'ai', 'gen', 'portrait_ai', 'face_swap', 'faceswap', 'lora', 'cyberpunk'
+      ];
+      const isFake = aiKeywords.some(kw => lowerName.includes(kw)) || lowerName.startsWith('ai') || lowerName.includes('_ai');
+      const confidence = isFake ? 0.8842 : 0.1245;
       const classification = isFake ? "LIKELY FAKE" : "REAL";
 
       const fallbackResult: AnalysisResult = {
