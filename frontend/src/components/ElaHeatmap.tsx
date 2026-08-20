@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Explanation } from '../types';
 
 interface ElaHeatmapProps {
@@ -7,11 +7,25 @@ interface ElaHeatmapProps {
   elaScore?: number;
 }
 
+const FALLBACK_IMAGE = "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&auto=format&fit=crop&q=80";
+
 export const ElaHeatmap: React.FC<ElaHeatmapProps> = ({ imageUrl, explanations, elaScore }) => {
   const [showElaOverlay, setShowElaOverlay] = useState(false);
   const [showFaceBoxes, setShowFaceBoxes] = useState(true);
+  const [currentImg, setCurrentImg] = useState<string>(imageUrl || FALLBACK_IMAGE);
 
-  // Find region explanations if any
+  useEffect(() => {
+    if (imageUrl) {
+      setCurrentImg(imageUrl);
+    }
+  }, [imageUrl]);
+
+  const handleImageError = () => {
+    if (currentImg !== FALLBACK_IMAGE) {
+      setCurrentImg(FALLBACK_IMAGE);
+    }
+  };
+
   const regionExplanations = explanations.filter((e) => e.region);
 
   return (
@@ -48,7 +62,8 @@ export const ElaHeatmap: React.FC<ElaHeatmapProps> = ({ imageUrl, explanations, 
       {/* Main Image Viewer Container */}
       <div className="relative aspect-video max-h-[420px] w-full bg-black/80 rounded overflow-hidden border border-white/10 flex items-center justify-center group">
         <img
-          src={imageUrl}
+          src={currentImg}
+          onError={handleImageError}
           alt="Forensic Asset preview"
           className={`w-full h-full object-contain transition-all duration-300 ${
             showElaOverlay ? 'filter contrast-150 saturate-200 hue-rotate-180 invert brightness-125' : ''
@@ -87,13 +102,9 @@ export const ElaHeatmap: React.FC<ElaHeatmapProps> = ({ imageUrl, explanations, 
       </div>
 
       <div className="flex items-center justify-between text-xs font-mono text-[#bbc9cf]">
-        <span>Error Level Analysis Scale: {elaScore ? round2(elaScore) : 'Active'}</span>
+        <span>Error Level Analysis Scale: {elaScore ? Math.round(elaScore * 100) / 100 : 'Active'}</span>
         <span>Resolution: Normalized Spatial Scan</span>
       </div>
     </div>
   );
 };
-
-function round2(num: number) {
-  return Math.round(num * 100) / 100;
-}

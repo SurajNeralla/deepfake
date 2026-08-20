@@ -54,7 +54,8 @@ export const Results: React.FC<ResultsProps> = ({ addToast }) => {
     );
   }
 
-  const mediaUrl = `/uploads/${result.filename}`;
+  const isLocalHost = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+  const mediaUrl = (result as any).preview_data_url || (isLocalHost ? `http://localhost:8000/uploads/${result.filename}` : `/uploads/${result.filename}`);
   const isSuspiciousOrFake = result.classification === 'SUSPICIOUS' || result.classification === 'LIKELY FAKE';
   
   const classificationColor = isSuspiciousOrFake ? 'text-[#ffb4ab]' : 'text-[#00fc92]';
